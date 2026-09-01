@@ -13,9 +13,22 @@ New here? Read [CONTEXT.md](CONTEXT.md) (the distilled project memory) and
 
 ---
 
-## The three pillars
+## The goal
 
-> **autonomous Minecraft bots that can BUILD BASES, LIVE in Minecraft, and COOPERATE**
+> **Autonomous Minecraft bots that can BUILD BASES, LIVE in Minecraft, and COOPERATE.**
+
+That is the north star — all three pillars. Honest status today (a single-bot engine, one
+pillar proven):
+
+| Pillar | Status | Where it stands |
+|---|---|---|
+| **Live** | ✅ **proven** | An empty bot, zero LLM, on a real server: barehanded hand-dig → wooden pickaxe from nothing → chop + replant oak → mine cobblestone, job→job. |
+| **Build** | 🟡 **partial** | Crafting infra, tool-chains, and parametric base/farm/storage blueprints exist; a full base has not yet been run end-to-end. |
+| **Cooperate** | 📐 **designed, not built** | Blueprint + build checklist + 3-bot acceptance test in [docs/COOPERATION.md](docs/COOPERATION.md); no multi-bot coordination implemented or tested yet. |
+
+**The goal is not yet met** — build is partial and cooperate is unbuilt. Reaching it needs a
+running server (to finish the build loop end-to-end, implement cooperation, and pass the
+3-bot test) plus wiring the Andy LLM. See [ROADMAP.md](ROADMAP.md).
 
 - **Build** — human-looking bases, farms, storage, mining shafts (parametric blueprints).
 - **Live** — the classical survival progression (logs → tools → stone → iron → diamond,

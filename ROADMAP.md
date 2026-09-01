@@ -63,6 +63,12 @@ is up: empty → pickaxe → axe → chop → mine → **real stone tools**, sel
   coordinated bodies with a state handoff? Decides the travel integration.
 - **Durable table protection:** mirror the runtime `digguard.protect()` into a persistent
   `protected.json` / basekeeping registration so it survives restarts.
+- **Proactive travel (D1):** the toolchains already *reactively* relocate toward wood when
+  none is in reach; the proactive complement is for the planner to read perception's
+  `nearestReachable('log')` and emit a **travel job** before `chopTrees`. Needs a
+  travel-skill bridge in the look-ahead path (it currently drives skills via `setProject`,
+  not `run(job)`/goto2 directly). Useful, not required — 2c's reactive recovery completes
+  the loop without it.
 - **Movement scarring / aesthetics:** bots should not leave dug-up trenches and floating
   pillars; tidy-travel + one-time cleanup of legacy scars.
 - **Waiting between actions:** characterize where wall-clock actually goes (tick cadence,

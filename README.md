@@ -116,6 +116,36 @@ docs/PLAYBOOK.md     — the human decision-tree: thresholds, tier spine, base l
 docs/CHAINS.md       — the tool-chain library (classical progression, capped at diamond)
 ```
 
+## Credits & acknowledgements
+
+FelsenBerry stands on excellent open-source work — it is an engine *on top of* these, not a
+replacement for them:
+
+- **[mineflayer](https://github.com/PrismarineJS/mineflayer)** (PrismarineJS) — the Minecraft
+  bot framework the entire body runs on: movement, world reads, crafting, entities. The
+  perception layer and the skill library are built on its APIs.
+- **[mineflayer-pathfinder](https://github.com/PrismarineJS/mineflayer-pathfinder)**
+  (PrismarineJS) — the current local travel primitive behind `deps.travel`.
+- **[Baritone](https://github.com/cabaletta/baritone)** (cabaletta), run headless via
+  **[HeadlessMC](https://github.com/3arthqu4ke/headlessmc)** (3arthqu4ke) — the planned
+  long-haul travel + ore-mining backend, field-tested as a separate headless client and to
+  be wired in behind `deps.travel`.
+- **[Ollama](https://github.com/ollama/ollama)** + **Andy-4** (Sweaterdog, on Hugging Face)
+  — the local, CPU-only, Minecraft-specialised LLM planned for the sparse goal-boundary
+  decisions.
+- **[mindcraft](https://github.com/kolbytn/mindcraft)** (Kolby Nottingham) and its community
+  edition **mindcraft-ce** — studied closely; its modes (reflex layer), task/benchmark spec,
+  and command/skill catalogue informed this design. FelsenBerry deliberately takes the
+  *opposite* stance on the LLM (sparse, off the hot path — vs. per-step), but owes it both
+  the comparison and several concrete ideas.
+- **[Voyager](https://github.com/MineDojo/Voyager)** (MineDojo) — the skill-library-as-you-go
+  idea, and the sequential-prompting baseline the look-ahead planner is measured against.
+- Planning patterns — GOAP / HTN decomposition and subsumption architecture from the
+  game-AI literature.
+
+Built by the **FEL crew**, allied with
+**[cavecrew](https://github.com/ZetOmega/cavecrew-mcp)**.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).

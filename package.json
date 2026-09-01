@@ -1,0 +1,28 @@
+{
+  "name": "felsenberry",
+  "version": "0.1.0",
+  "description": "An autonomous Minecraft bot engine — a sparse-LLM brain over a deterministic body (speculative look-ahead runtime).",
+  "main": "src/planner.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "node test/lookahead.test.js"
+  },
+  "keywords": [
+    "minecraft",
+    "mineflayer",
+    "autonomous-agent",
+    "game-ai",
+    "goap",
+    "htn",
+    "llm",
+    "ollama",
+    "look-ahead"
+  ],
+  "author": "felsenuboot",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felsenuboot/FelsenBerry.git"
+  },
+  "homepage": "https://github.com/felsenuboot/FelsenBerry#readme"
+}

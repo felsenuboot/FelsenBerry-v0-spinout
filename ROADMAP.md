@@ -1,6 +1,6 @@
 # ROADMAP — what's done, what's next
 
-Status snapshot as of the first field-test cycle. See [CONTEXT.md](CONTEXT.md) for the
+Status snapshot after the first field-test + fix cycle. See [CONTEXT.md](CONTEXT.md) for the
 findings behind these items.
 
 ## ✅ Done — proven
@@ -14,44 +14,36 @@ findings behind these items.
   server. Interrupts preempt + resume on the real ladder.
 - **Safety:** arm-when-clear (defer bootstrap until ≥30 b from base) + base-protection
   gather filter. Clean damage audits (0 base blocks touched).
-- **Bootstrap ordering:** from zero, tool-craft leads (chopping needs an axe) — the
-  classical punch-wood → tools → chop order.
-- **Multi-leg flatten:** each chain's work-legs are separate look-ahead jobs, so
-  `craft_wood_tools` makes *both* pickaxe and axe (fixes the dropped-axe loop-killer).
+- **Bootstrap ordering + multi-leg flatten:** from zero, tool-craft leads and each chain's
+  work-legs are separate jobs, so `craft_wood_tools` makes *both* pickaxe and axe (fixes
+  the dropped-axe loop-killer).
 
-## 🔧 Now — make the loop complete *reliably* (the reliability push)
+## 🧪 Implemented, awaiting live-verify (the reliability push)
 
-These are the difference between a run that completes and one that stalls. Do them in the
-host skill library as **reviewed diffs** (see AGENTS.md).
+The full field-test bug batch is **fixed in code** — mock-verified (lookahead 26/26,
+perception 20/20) and **review-gated** (shared host code; deploy = careful cherry-pick, not
+a branch merge). What remains is **one batch live-verify** on a fresh empty bot once a server
+is up: empty → pickaxe → axe → chop → mine → **real stone tools**, self-healing throughout.
 
-1. **Starter-base semantics (the crafting table).**
-   - Do **not** drop/deconstruct the table the bootstrap places — keep it placed.
-   - **Reuse** an existing table/chest in reach instead of placing a duplicate.
-   - Register the first placed table as a **protected** starter-base fixture.
-2. **Tier-assert.** `ensureTool('stone_pickaxe')` must require the *stone* tier, not accept
-   a held wooden pickaxe as satisfying the pickaxe *class*. So `craft_stone_gear` yields
-   real stone tools, not a no-op.
-3. **Perception / world-state layer** — the unifying fix. A compact, serializable,
-   CPU-only snapshot:
-   ```
-   worldState = {
-     conditions:   { inventory:{item:count}, health, food, pos },
-     surroundings: { resources:{ <type>:{ count, nearestReachable, positions } },
-                     threats:[...], structures:[ table/chest/furnace + pos ] }
-   }
-   ```
-   Feed it to `plan()`/`worldFrom` (kills the stale-snapshot race) and to the chains
-   (chop what's actually nearby; relocate toward perceived forest; reuse perceived tables).
-   **Design it as Andy's future prompt context** — one layer serves planner + LLM.
-4. **Toolchain recovery, not freeze.** `craftToolChain`/`ensureTool`/`chopTrees` must
-   recover from a failed precondition (re-establish a lost table; gather more wood via
-   perception; relocate to reachable trees) and only give up with a **specific typed
-   reason** — never a silent stall.
-5. **Robust resource search.** If no tree/ore is within reach, search a wider radius and
-   **relocate** toward the nearest perceived resource before failing — don't die ~30 b out.
+- **Perception / world-state layer** (`src/perception.js`) — CPU-only `worldState(bot)`:
+  `{ conditions:{inventory,health,food,pos}, surroundings:{resources,structures,threats} }`,
+  with `nearestReachable` per resource. Wired into the planner's `worldFrom` so the plan
+  sees a fresh snapshot (kills the stale-snapshot "nothing_to_do" race). Built as **Andy's
+  future prompt context** — one layer serves planner + LLM.
+- **Starter-base table** — opt-in `keepTable` leaves the bootstrap table **placed**
+  (default off = fleet unchanged); the next craft **reuses** the in-reach table; a runtime
+  `digguard.protect()` registers it as a protected starter fixture. *(Durable
+  `protected.json` mirroring still to do — belt-and-suspenders; the loop completes without it.)*
+- **Tier-assert** — `ensureTool('stone_pickaxe')` now requires the *stone* tier (a held
+  wooden pickaxe no longer satisfies it), so `craft_stone_gear` yields real stone tools.
+- **Toolchain recovery, not freeze** — `chopTrees` and `craftToolChain`'s gather now
+  **relocate toward perceived wood and retry** (bounded ≤4 hops) instead of stalling, then
+  fail with a **specific typed reason**. Kills the "no axe, could not acquire" and "no tree
+  within 64" freezes. This is also the robust-resource-search fix.
 
 ## ⏭️ Next — major milestones
 
+- **Batch live-verify** (blocked on a running server) — the gating step above.
 - **Wire the real Andy LLM** at the goal boundary (currently a deterministic stub): local
   Ollama, **CPU-only (`num_gpu:0`)**, schema-constrained output + validate + deterministic
   fallback, fires **only** at job boundaries (look-ahead hides its latency). Andy consumes
@@ -69,6 +61,8 @@ host skill library as **reviewed diffs** (see AGENTS.md).
 
 - **One-body vs two-body** for Baritone: run it inside the mineflayer process, or two
   coordinated bodies with a state handoff? Decides the travel integration.
+- **Durable table protection:** mirror the runtime `digguard.protect()` into a persistent
+  `protected.json` / basekeeping registration so it survives restarts.
 - **Movement scarring / aesthetics:** bots should not leave dug-up trenches and floating
   pillars; tidy-travel + one-time cleanup of legacy scars.
 - **Waiting between actions:** characterize where wall-clock actually goes (tick cadence,

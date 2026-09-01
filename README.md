@@ -114,6 +114,7 @@ src/planner.js       — the look-ahead runtime (facade + planner + 1-deep queue
 docs/ARCHITECTURE.md — the full execution-architecture design (reuse/glue/build)
 docs/PLAYBOOK.md     — the human decision-tree: thresholds, tier spine, base lifecycle
 docs/CHAINS.md       — the tool-chain library (classical progression, capped at diamond)
+docs/COOPERATION.md  — the cooperate pillar: deterministic shared-state coordination (design)
 ```
 
 ## Credits & acknowledgements

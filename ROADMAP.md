@@ -53,9 +53,13 @@ is up: empty → pickaxe → axe → chop → mine → **real stone tools**, sel
   Design the one-body-vs-two-body handoff (Baritone is a separate client today).
 - **Extend the spine past stone:** iron (mine @Y≈16 → smelt → iron gear) and diamond
   (@Y≈−59), to the pre-Nether cap. Depends on reliable travel-to-depth.
-- **The COOPERATE pillar** (untested): multi-bot coordination on deterministic shared state
-  (depot/base registries, leases) rather than natural-language chatter (which collapses at
-  scale — cf. mindcraft's own MineCollab benchmark).
+- **The COOPERATE pillar** — now **designed** in
+  [docs/COOPERATION.md](docs/COOPERATION.md) (shared registries folded into perception,
+  lease-before-act, deterministic work-partition + conflict rules, respect-claims guard),
+  **not yet built**. That doc carries a next-cycle build checklist and a 3-test acceptance
+  plan (culminating in "throughput stays additive at 3–5 bots" — no MineCollab collapse,
+  because coordination is shared *state*, not natural-language chatter). The substrate
+  (BASE/DEPOT registries, USING/FREE leases) already works in the felcrew fleet.
 
 ## 🗒️ Backlog / open questions
 
